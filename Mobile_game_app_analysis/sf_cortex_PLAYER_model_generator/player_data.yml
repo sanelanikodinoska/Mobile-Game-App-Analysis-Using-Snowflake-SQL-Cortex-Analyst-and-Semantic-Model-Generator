@@ -1,0 +1,176 @@
+name: player_data
+tables:
+  - name: PLAYER_ACTIVITY_TABLE
+    description: This table stores information about player activity in a game, including user ID, login date, and various metrics related to their gameplay and monetization
+    base_table:
+      database: CORTEX_ANALYST_SEMANTICS
+      schema: SEMANTIC_MODEL_GENERATOR
+      table: PLAYER_ACTIVITY_TABLE
+    primary_key:
+      columns:
+        - USER_ID
+    dimensions:
+      - name: USER_ID
+        synonyms:
+          - ' player '
+        description: Unique identifiers for each user
+        expr: USER_ID
+        data_type: TEXT
+        sample_values:
+          - 7a7f48bde15393d3b9d84384c7374ac1
+          - a7d45d3ed402551c403d0e31cd1121bf
+          - 1da71a2d596d77bdbb5c066be20bd43a
+    time_dimensions:
+      - name: LOGIN_DATE
+        synonyms:
+          - ' date of login '
+        description: Date of last login by the player
+        expr: LOGIN_DATE
+        data_type: DATE
+        sample_values:
+          - '2021-12-22'
+          - '2021-10-12'
+          - '2021-02-05'
+    measures:
+      - name: SESSIONS
+        synonyms:
+          - ' number of times logged in '
+        description: Number of sessions played by a player
+        expr: SESSIONS
+        data_type: NUMBER
+        sample_values:
+          - '1'
+          - '2'
+          - '3'
+      - name: TOTAL_TIME_SEC
+        synonyms:
+          - ' total time spent '
+        description: Total time spent by a player in seconds
+        expr: TOTAL_TIME_SEC
+        data_type: NUMBER
+        sample_values:
+          - '0'
+          - '5858'
+          - '157366'
+      - name: MISSIONS
+        synonyms:
+          - ' number of missions '
+        description: Number of missions completed by the player
+        expr: MISSIONS
+        data_type: NUMBER
+        sample_values:
+          - '0'
+          - '1'
+          - '2'
+      - name: AD_REVENUE
+        synonyms:
+          - ' profit from adds '
+          - ' earning from adds '
+          - ' revenue from adds '
+        description: Average Daily Revenue
+        expr: AD_REVENUE
+        data_type: NUMBER
+        sample_values:
+          - '0'
+          - '6'
+          - '4'
+      - name: IAP_REVENUE
+        synonyms:
+          - 'profit from in-apps'
+          - 'earning from in-apps'
+          - 'revenue from in-apps'
+        description: In-app purchase revenue
+        expr: IAP_REVENUE
+        data_type: NUMBER
+        sample_values:
+          - '0'
+          - '757'
+          - '780'
+      - name: TRANSACTIONS
+        synonyms:
+          - ' number of in-app purchases '
+        description: Number of In-App purchases a player made
+        expr: TRANSACTIONS
+        data_type: NUMBER
+        sample_values:
+          - '0'
+          - '1'
+  - name: PLAYER_DATA_TABLE
+    description: Player data table containing user information, including user ID,
+      installation date, user agent channel, cost per install, and platform details
+    base_table:
+      database: CORTEX_ANALYST_SEMANTICS
+      schema: SEMANTIC_MODEL_GENERATOR
+      table: PLAYER_DATA_TABLE
+    primary_key:
+      columns:
+        - USER_ID
+    filters:
+      - name: ' platform ' 
+        synonyms:
+          - 'mobile '
+          - 'device' 
+        description: ' A filter to restrict which device software is used ' 
+        expr: platform in ('android', 'ios') 
+    dimensions:
+      - name: USER_ID
+        synonyms:
+          - ' player '
+        description: Unique identifier for each player
+        expr: USER_ID
+        data_type: TEXT
+        sample_values:
+          - 4fe43d3708f5a94b7eb3782f534c8f80
+          - 8ec6d940e6dfe24e6430929899b0f5db
+          - 99a82850df87c9a939095fe2e36fcada
+      - name: UA_CHANNEL
+        synonyms:
+          - ' user aquisition channel '
+        description: User Acquisition channel. This is the source of the acquisition. Organic means the player installed the game directly and not through an advertisement
+        expr: UA_CHANNEL
+        data_type: TEXT
+        sample_values:
+          - ORGANIC
+          - UNITY ADS
+          - APPLE SEARCH ADS
+      - name: PLATFORM
+        synonyms:
+          - ' device ' 
+          - ' mobile '
+        description: Device system software on which the game is played
+        expr: PLATFORM
+        data_type: TEXT
+        sample_values:
+          - ANDROID
+          - IOS
+    time_dimensions:
+      - name: INSTALL_DATE
+        description: Date of installation or setup of the player's account.
+        expr: INSTALL_DATE
+        data_type: DATE
+        sample_values:
+          - '2021-02-13'
+          - '2021-02-14'
+          - '2021-12-02'
+    measures:
+      - name: CPI
+        synonyms:
+          - ' cost per install ' 
+        description: Cost per Install – cost of acquiring the player. If value is 0, the player UA channel is organic
+        expr: CPI
+        data_type: NUMBER
+        sample_values:
+          - '0'
+          - '31'
+          - '35'
+      
+
+relationships:
+   - name: ' activity to player '
+     left_table: ' player_activity_table '
+     right_table: ' player_data_table ' 
+     join_type: inner
+     relationship_type: many_to_one 
+     relationship_columns:
+       - left_column: 'USER_ID'
+         right_column: 'USER_ID'
