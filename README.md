@@ -1,0 +1,1 @@
+# Mobile-Game-App-Analysis-Using-Snowflake-SQL-Cortex-Analyst-and-Semantic-Model-Generator
